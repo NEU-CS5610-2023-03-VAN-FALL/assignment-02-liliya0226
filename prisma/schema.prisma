@@ -9,8 +9,8 @@ datasource db {
 
 model Movie {
   id       Int      @id @default(autoincrement())
-  title    String   @unique
-  review   String
+  title    String    @db.VarChar(50)
+  review   String     @db.VarChar(200)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -5,6 +5,9 @@ const cors = require("cors");
 
 const app = express();
 
+const maxReviewLength = 200;
+const maxTitleLength = 50;
+
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -15,11 +18,14 @@ const prisma = new PrismaClient();
 // Create a new movie review
 app.post("/movie-review", async (req, res) => {
   const { title, review } = req.body;
-
-  const maxReviewLength = 200;
+  console.log(review.length);
+  if (title.length > maxTitleLength) {
+    return res.status(400).json({ error: "Title is too long. Please limit your title to 50 characters." });
+  }
   if (review.length > maxReviewLength) {
     return res.status(400).json({ error: "Review length exceeds the maximum limit" });
   }
+  console.log("Submit put!");
 
   try {
     const movieReview = await prisma.Movie.create({
@@ -96,20 +102,24 @@ app.put("/movie-review/:id", async (req, res) => {
     if (!title || !review) {
       return res.status(400).json({ error: "Title and review are required" });
     }
-  
+    console.log("Submit put!");
+    if (title.length > maxTitleLength) {
+        return res.status(400).json({ error: "Title is too long. Please limit your title to 50 characters." });
+    }
+    console.log("Submit put2!");
+    if (review.length > maxReviewLength) {
+      return res.status(400).json({ error: "Review length exceeds the maximum limit" });
+    }  
+    console.log("Submit put3!");
     // Check if the movie review exists
     const existingReview = await prisma.Movie.findUnique({
       where: { id },
     });
-  
+    console.log("Submit put4!");
     if (!existingReview) {
       return res.status(404).json({ error: "Movie review not found" });
     }
-
-    const maxReviewLength = 200;
-    if (review.length > maxReviewLength) {
-      return res.status(400).json({ error: "Review length exceeds the maximum limit" });
-    }
+    console.log("Submit put5!");
 
     // Update the movie review
     const updatedReview = await prisma.Movie.update({

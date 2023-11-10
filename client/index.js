@@ -1,6 +1,7 @@
 const reviewForm = document.querySelector(".reviewForm");
 const reviewList = document.querySelector(".reviewsList");
 const maxReviewLength = 200; 
+const maxTitleLength = 50;
 
 const refreshAllReviews = () => {
   fetch("http://localhost:8000/movie-reviews")
@@ -12,7 +13,6 @@ const refreshAllReviews = () => {
       return response.json();
     })
     .then((data) => {
-        console.log(data);
         
         const html = data.map((review) => {
           // Frontend validation example
@@ -56,8 +56,13 @@ reviewForm.addEventListener("submit", (e) => {
   const newReview = {
     title: e.currentTarget.title.value,
     review: e.currentTarget.review.value,
+    createdAt: new Date(),
   };
 
+  if (newReview.title.length > maxTitleLength) {
+    alert("Title is too long. Please limit your title to 50 characters.");
+    return;
+  }
   if (newReview.review.length > maxReviewLength) {
     alert("Review is too long. Please limit your review to 200 characters.");
     return;
@@ -111,8 +116,18 @@ reviewList.addEventListener("click", (e) => {
     
                 const reviewItem = document.createElement("div");
                 reviewItem.classList.add("review-item");
+                const formattedCreatedAt = new Date(movieReview.createdAt).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                  });
+  
                 reviewItem.innerHTML = `
                     <p>${movieReview.review}</p>
+                    <p>Created at: ${formattedCreatedAt}</p> 
                 `;
     
                 reviewModal.appendChild(reviewItem);
@@ -141,7 +156,6 @@ reviewList.addEventListener("click", (e) => {
             .then((data) => {
                 const reviewToEdit = data; // Use the entire data as the review object
 
-                // Assuming you have a form for editing reviews
                 const editForm = document.createElement("form");
                 editForm.classList.add("edit-form");
 
@@ -157,7 +171,6 @@ reviewList.addEventListener("click", (e) => {
                 reviewLabel.textContent = "Review:";
                 const reviewInput = document.createElement("textarea");
                 reviewInput.value = reviewToEdit.review;
-                reviewInput.setAttribute("maxlength", maxReviewLength); 
                 reviewLabel.appendChild(reviewInput);
                 
                 const submitButton = document.createElement("button");
@@ -175,15 +188,25 @@ reviewList.addEventListener("click", (e) => {
                     const updatedReview = {
                         title: titleInput.value,
                         review: reviewInput.value,
+                        UpdatedAt: new Date()
                     };
                     console.log("Submit button clicked!");
+                    if (updatedReview.title.length > maxTitleLength) {
+                        alert("Title is too long. Please limit your title to 50 characters.");
+                        return;
+                    }
+                    console.log("Submit button clicked2!");
+                    console.log(updatedReview.review.length);
                     if (updatedReview.review.length > maxReviewLength) {
                         alert("Review is too long. Please limit your review to 200 characters.");
                         return;
                     }
-                    console.log("Submit button clicke22d!");
+                    console.log(updatedReview.review.length > maxReviewLength);
+                    console.log("Submit button clicked3!");
+
                     // Send a request to update the review
                     fetch(`http://localhost:8000/movie-review/${reviewId}`, {
+                     
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
