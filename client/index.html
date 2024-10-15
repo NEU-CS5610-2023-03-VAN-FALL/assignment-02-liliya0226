@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Movie Review Submission</title>
+</head>
+
+
+<body>
+    <h1>Movie Review Submission</h1>
+    <div class="review-form-wrapper">
+    <!-- Form to submit a new movie review -->
+        <form class= "reviewForm">
+            <label for="title">Movie Name:</label>
+            <input type="text" id="title" name="movieName" required>
+            <label for="review">Movie Review:</label>
+            <textarea id="review" name="review" required></textarea>
+
+            <button type="submit">Submit Review</button>
+            <p>Maxium Characters: <span id="remaining-characters">200</span></p>
+        </form>
+    </div>
+
+    <div id="reviewsList">
+        <ul class="reviewsList"></ul>
+    </div>
+
+    <script src="index.js"></script>
+
+</body>
+</html>
